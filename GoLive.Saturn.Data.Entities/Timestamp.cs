@@ -6,5 +6,7 @@ namespace GoLive.Saturn.Data.Entities
     {
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }
+
+        public bool BypassAutomaticDatePopulation { get; set; }
     }
 }
