@@ -59,7 +59,7 @@ namespace GoLive.Saturn.Data.Entities
 
         public static bool operator ==(WeakRef<T> left, string right)
         {
-            if (left == null || String.IsNullOrWhiteSpace(right) || string.IsNullOrWhiteSpace(left.Id))
+            if (left is null || String.IsNullOrWhiteSpace(right) || string.IsNullOrWhiteSpace(left.Id))
             {
                 return false;
             }
