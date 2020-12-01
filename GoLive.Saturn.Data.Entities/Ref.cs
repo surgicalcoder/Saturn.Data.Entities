@@ -28,6 +28,11 @@ namespace GoLive.Saturn.Data.Entities
             return item.Id;
         }
 
+        public static implicit operator T(Ref<T> item)
+        {
+            return item.Item;
+        }
+
         public static implicit operator Ref<T>(T item)
         {
             return new Ref<T>() { Item = item };
@@ -37,7 +42,6 @@ namespace GoLive.Saturn.Data.Entities
         {
             return new Ref<T>(item);
         }
-
 
         private string _refId;
 
