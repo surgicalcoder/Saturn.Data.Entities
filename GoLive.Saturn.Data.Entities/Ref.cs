@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace GoLive.Saturn.Data.Entities
@@ -23,27 +24,27 @@ namespace GoLive.Saturn.Data.Entities
 
         public static implicit operator string(Ref<T> item)
         {
-            return item.Id;
+            return item?.Id;
         }
 
         public static implicit operator T(Ref<T> item)
         {
-            return item.Item;
+            return item?.Item;
         }
 
         public static implicit operator Ref<T>(T item)
         {
-            return new Ref<T>() { Item = item };
+            return item == default ? default : new Ref<T>() { Item = item };
         }
 
         public static implicit operator Ref<T>(string item)
         {
-            return new Ref<T>(item);
+            return string.IsNullOrWhiteSpace(item) ? default : new Ref<T>(item);
         }
 
         public static implicit operator Entity(Ref<T> item)
         {
-            return item.Item;
+            return item?.Item;
         }
 
         private string _refId;
@@ -54,7 +55,7 @@ namespace GoLive.Saturn.Data.Entities
         {
             get
             {
-                if (Item != null)
+                if (Item != null && !string.IsNullOrWhiteSpace(Item.Id))
                 {
                     _refId = Item.Id;
                     return Item.Id;
