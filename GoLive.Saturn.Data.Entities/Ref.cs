@@ -4,22 +4,20 @@ using System.Linq;
 
 namespace GoLive.Saturn.Data.Entities
 {
-    public struct Ref<T> : IEquatable<Ref<T>> where T : Entity
+    public class Ref<T> : IEquatable<Ref<T>> where T : Entity
     {
         public Ref(string refId)
         {
             _refId = refId;
-            Item = null;
         }
 
         public Ref(T item)
         {
             Item = item;
-            _refId = null;
 
             if (item != null && !String.IsNullOrWhiteSpace(item.Id))
             {
-                _refId = item.Id;
+                Id = item.Id;
             }
         }
 
@@ -64,7 +62,7 @@ namespace GoLive.Saturn.Data.Entities
 
                 return _refId;
             }
-            set => _refId = value;
+            set { _refId = value; }
         }
 
         public override string ToString()
@@ -74,14 +72,12 @@ namespace GoLive.Saturn.Data.Entities
 
         public void Fetch(IQueryable<T> items)
         {
-            var id = _refId;
-            Item = items.FirstOrDefault(f => f.Id == id);
+            Item = items.FirstOrDefault(f => f.Id == _refId);
         }
 
         public void Fetch(IList<T> items)
         {
-            var id = _refId;
-            Item = items.FirstOrDefault(f => f.Id == id);
+            Item = items.FirstOrDefault(f => f.Id == _refId);
         }
 
         public void Fetch(Func<string, T> expr)
@@ -105,17 +101,23 @@ namespace GoLive.Saturn.Data.Entities
             return false;
         }
 
+        public Ref()
+        {
+        }
 
         public string Type => typeof(T).FullName;
 
         public bool Equals(Ref<T> other)
         {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
             return string.Equals(_refId, other._refId);
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is null) return false;
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
             return Equals((Ref<T>)obj);
         }
