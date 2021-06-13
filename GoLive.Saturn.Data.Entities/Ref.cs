@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace GoLive.Saturn.Data.Entities
 {
-    public class Ref<T> : IEquatable<Ref<T>> where T : Entity
+    public class Ref<T> : IEquatable<Ref<T>> where T : Entity, new()
     {
         public Ref(string refId)
         {
@@ -24,12 +24,37 @@ namespace GoLive.Saturn.Data.Entities
 
         public static implicit operator string(Ref<T> item)
         {
-            return item?.Id;
+            if (item == null)
+            {
+                return null;
+            }
+
+            if (item.Item != null && !string.IsNullOrWhiteSpace(item.Item.Id))
+            {
+                return item.Item.Id;
+            }
+            
+            if (!string.IsNullOrWhiteSpace(item.Id))
+            {
+                return item.Id;
+            }
+
+            return null;
         }
 
         public static implicit operator T(Ref<T> item)
         {
-            return item?.Item;
+            if (item == null)
+            {
+                return null;
+            }
+
+            if (item.Item != null)
+            {
+                return item.Item;
+            }
+
+            return item.Id != null ? new T(){Id = item.Id} : null;
         }
 
         public static implicit operator Ref<T>(T item)
@@ -106,7 +131,7 @@ namespace GoLive.Saturn.Data.Entities
         {
         }
 
-        public string Type => typeof(T).FullName;
+        /*public string Type => typeof(T).FullName;*/
 
         public bool Equals(Ref<T> other)
         {
